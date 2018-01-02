@@ -1,5 +1,11 @@
 <template>
   <div>
+    <div class="source">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/admin' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item>用户列表</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
     <el-table
       :data="tableData"
       stripe
@@ -29,26 +35,26 @@
         </template>
       </el-table-column>
     </el-table>
-    <modal :dialogFormVisible="editModalFlag" @modalToggle="modalChange" :title="'权限信息'">
+    <modal :dialogFormVisible="editModalFlag" :correct="true" @modalToggle="modalChange" :title="'权限信息'">
       <el-form :model="form" slot="content">
             <el-form-item label="权限设置" :label-width="formLabelWidth">
-                <el-select v-model="form.role" placeholder="请用户的权限">
-                    <el-option label="普通用户" value=""></el-option>
-                    <el-option label="邮件激活后的用户" value=""></el-option>
-                    <el-option label="高级用户" value=""></el-option>
-                    <el-option label="管理员" value=""></el-option>
-                    <el-option label="超级管理员" value=""></el-option>
+                <el-select placeholder="选择用户的权限"  v-model="form.role">
+                    <el-option label="普通用户" value="0"></el-option>
+                    <el-option label="邮件激活后的用户" value="20"></el-option>
+                    <el-option label="高级用户" value="30"></el-option>
+                    <el-option label="管理员" value="40"></el-option>
+                    <el-option label="超级管理员" value="50"></el-option>
                 </el-select>
             </el-form-item>
         </el-form>
     </modal>
-    <modal :dialogFormVisible="pwdModalFlag" @modalToggle="modalChange" :title="'修改密码'">
-      <el-form :model="form" slot="content">
+    <modal :dialogFormVisible="pwdModalFlag" @resetEvent="resetForm('modifyPwdForm')" :reset="true" @modalToggle="modalChange" :title="'修改密码'">
+      <el-form slot="content"  :model="modifyPwdForm" status-icon :rules="rules" ref="modifyPwdForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="密码" prop="pass">
-          <el-input type="password" v-model="form.pass" auto-complete="off"></el-input>
+          <el-input type="password" v-model="modifyPwdForm.pass" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="确认密码" prop="checkPass">
-          <el-input type="password" v-model="form.checkPass" auto-complete="off"></el-input>
+          <el-input type="password" v-model="modifyPwdForm.checkPass" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
     </modal>
@@ -62,24 +68,36 @@ export default {
     data () {
         var validatePass = (rule, value, callback) => {
           if (value === '') {
-            callback(new Error('请输入密码'));
+            callback(new Error('请输入密码'))
           } else {
-            if (this.ruleForm2.checkPass !== '') {
-              this.$refs.ruleForm2.validateField('checkPass');
+            if (this.modifyPwdForm.checkPass !== '') {
+              this.$refs.modifyPwdForm.validateField('checkPass')
             }
-            callback();
+            callback()
           }
         }
         var validatePass2 = (rule, value, callback) => {
           if (value === '') {
-            callback(new Error('请再次输入密码'));
-          } else if (value !== this.ruleForm2.pass) {
-            callback(new Error('两次输入密码不一致!'));
+            callback(new Error('请再次输入密码'))
+          } else if (value !== this.modifyPwdForm.pass) {
+            callback(new Error('两次输入密码不一致!'))
           } else {
-            callback();
+            callback()
           }
         }
         return {
+          modifyPwdForm: {
+            pass: '',
+            checkPass: ''
+          },
+          rules: {
+            pass: [
+              { validator: validatePass, trigger: 'blur' }
+            ],
+            checkPass: [
+              { validator: validatePass2, trigger: 'blur' }
+            ]
+          },
           pwdModalFlag: false,
           editModalFlag: false,
           tableData: [{
@@ -92,16 +110,18 @@ export default {
             role: '管理员'
           }],
           form: {
-            role: '',
-            pass: '',
-            checkPass: ''
+            role: ''
           },
           formLabelWidth: '120px'
         }
     },
     methods: {
       modalChange () {
-        this.modalFlag = false
+        this.pwdModalFlag = false
+        this.editModalFlag = false
+      },
+      resetForm (formName) {
+        this.$refs[formName].resetFields()
       }
     },
     components: {
@@ -111,5 +131,6 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-
+  .source
+    padding 0 10px 20px 10px
 </style>

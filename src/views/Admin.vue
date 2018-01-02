@@ -40,11 +40,30 @@
             </el-aside>
             <el-container>
                 <el-header>
-                    <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
-                        <el-radio-button :label="false">展开</el-radio-button>
-                        <el-radio-button :label="true">收起</el-radio-button>
-                    </el-radio-group>
-                    <span style="font-weight: bold;">博客管理系统</span>
+                    <el-row type="flex" justify="space-between">
+                        <el-col :span="6">
+                            <el-radio-group v-model="isCollapse" style="margin: 10px 0;">
+                                <el-radio-button :label="false">展开</el-radio-button>
+                                <el-radio-button :label="true">收起</el-radio-button>
+                            </el-radio-group>
+                        </el-col>
+                        <el-col :span="3" :offset="15">
+                            <div class="profile">
+                                <img src="../assets/img/a1.jpg" alt="" width="42" height="42">
+                            </div>
+                            <el-dropdown>
+                                <span class="el-dropdown-link">
+                                    超级管理员<i class="el-icon-arrow-down el-icon--right"></i>
+                                </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item>基本资料</el-dropdown-item>
+                                    <el-dropdown-item>修改密码</el-dropdown-item>
+                                    <el-dropdown-item>退出</el-dropdown-item>
+                                </el-dropdown-menu>
+                                <h4 class="login-name">用户名</h4>
+                            </el-dropdown>
+                        </el-col>
+                    </el-row>
                 </el-header>
                 <el-main>
                     <router-view />
@@ -76,6 +95,32 @@ export default {
 </script>
 
 <style scoped lang="stylus">
+    .el-dropdown {
+        line-height: 0;
+        padding-top: 30px;
+    }
+
+    .login-name {
+        position: absolute;
+        top: 20px;
+        left: 0;
+        line-height: 0;
+    }
+
+    .el-dropdown-link {
+        line-height: 0;
+    }
+
+    .profile {
+        display: inline-block;
+        height: 50px;
+        margin-top: 10px;
+        vertical-align: top;
+    }
+    .profile img {
+        border-radius: 50%;
+    }
+
     .el-menu-vertical-demo:not(.el-menu--collapse) {
         width: 220px;
         min-height: 400px;
@@ -85,7 +130,7 @@ export default {
         border: none;
     }
     .el-header {
-        background-color: #f3f3f4;
+        background-color: #E9EEF3;
         color: #333;
         text-align: left;
         line-height: 60px;
@@ -95,9 +140,9 @@ export default {
         color: #333;
         line-height: 200px;
     }
-    
+                        
     .el-main {
-        background-color: #E9EEF3;
+        background-color: #f3f3f4;
         color: #333;
     }
     

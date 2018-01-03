@@ -51,14 +51,14 @@
                             <div class="profile">
                                 <img src="../assets/img/a1.jpg" alt="" width="42" height="42">
                             </div>
-                            <el-dropdown>
+                            <el-dropdown @command="handleCommand">
                                 <span class="el-dropdown-link">
                                     超级管理员<i class="el-icon-arrow-down el-icon--right"></i>
                                 </span>
                                 <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item>基本资料</el-dropdown-item>
-                                    <el-dropdown-item>修改密码</el-dropdown-item>
-                                    <el-dropdown-item>退出</el-dropdown-item>
+                                    <el-dropdown-item command="1">基本资料</el-dropdown-item>
+                                    <el-dropdown-item command="2">修改密码</el-dropdown-item>
+                                    <el-dropdown-item command="3">退出</el-dropdown-item>
                                 </el-dropdown-menu>
                                 <h4 class="login-name">用户名</h4>
                             </el-dropdown>
@@ -86,6 +86,15 @@ export default {
       },
       handleClose (key, keyPath) {
         // console.log(key, keyPath)
+      },
+      handleCommand (command) {
+          if (command === '3') {
+              this.$ajax.get('/users/logout').then(res => {
+                  if (res.data.status === '1') {
+                      this.$router.push('/')
+                  }
+              })
+          }
       }
     },
     components: {

@@ -60,7 +60,7 @@
                                     <el-dropdown-item command="2">修改密码</el-dropdown-item>
                                     <el-dropdown-item command="3">退出</el-dropdown-item>
                                 </el-dropdown-menu>
-                                <h4 class="login-name">用户名</h4>
+                                <h4 class="login-name">{{ userName }}</h4>
                             </el-dropdown>
                         </el-col>
                     </el-row>
@@ -74,11 +74,21 @@
 </template>
 
 <script type="text/ecmascript-6">
+import { mapState } from 'vuex'
+import { delCookie, getCookie } from '../util/cookies'
 export default {
     data () {
         return {
             isCollapse: false
         }
+    },
+    mounted () {
+        getCookie('sessionId')
+    },
+    computed: {
+        ...mapState([
+            'userName'
+        ])
     },
     methods: {
       handleOpen (key, keyPath) {
@@ -91,6 +101,8 @@ export default {
           if (command === '3') {
               this.$ajax.get('/users/logout').then(res => {
                   if (res.data.status === '1') {
+                      this.$store.commit('SET_USERNAME', '')
+                      delCookie('sessionId')
                       this.$router.push('/')
                   }
               })

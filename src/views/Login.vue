@@ -23,7 +23,7 @@
                         </svg>
                     </span>
                     <div class="input-group">
-                        <input id="username" type="text" placeholder="用户名" v-model="username">
+                        <input id="userName" type="text" placeholder="用户名" v-model="userName">
                     </div>
                 </div>
             </div>
@@ -45,39 +45,42 @@
 </template>
 
 <script type="text/ecmascript-6">
-   export default {
-       data () {
-           return {
-               username: '',
-               password: '',
-               errMsg: '',
-               isTips: false
-           }
-       },
-       methods: {
-           login () {
-               if (!this.username || !this.password) {
-                   this.isTips = true
-                   this.errMsg = '用户名、密码不能为空'
-               }
-               this.$ajax.post('/users/login', {
-                   username: this.username,
-                   password: this.password
-               }).then(res => {
-                   console.log(res.data.status)
-                   if (res.data.status === '0') {
-                       this.$router.push('/admin')
-                   } else {
-                       this.isTips = true
-                       this.errMsg = '用户/密码错误,请重新输入'
-                   }
-               })
-           }
-       },
-       components: {
+    import { setCookie } from '../util/cookies'
+    export default {
+        data () {
+            return {
+                userName: '',
+                password: '',
+                errMsg: '',
+                isTips: false
+            }
+        },
+        methods: {
+            login () {
+                if (!this.userName || !this.password) {
+                    this.isTips = true
+                    this.errMsg = '用户名、密码不能为空'
+                }
+                this.$ajax.post('/users/login', {
+                    userName: this.userName,
+                    password: this.password
+                }).then(response => {
+                    let res = response.data
+                    if (res.status === '0') {
+                        this.$store.commit('SET_USERNAME', res.result.user.userName)
+                        setCookie('sessionId', res.result.sessionId)
+                        this.$router.push('/admin')
+                    } else {
+                        this.isTips = true
+                        this.errMsg = '用户/密码错误,请重新输入'
+                    }
+                })
+            }
+        },
+        components: {
 
-       }
-   }
+        }
+    }
 </script>
 
 <style lang="stylus" scoped>

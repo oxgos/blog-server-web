@@ -23,7 +23,7 @@
                         </svg>
                     </span>
                     <div class="input-group">
-                        <input id="userName" type="text" placeholder="用户名" v-model="userName">
+                        <input type="text" placeholder="用户名" v-model="account">
                     </div>
                 </div>
             </div>
@@ -49,7 +49,7 @@
     export default {
         data () {
             return {
-                userName: '',
+                account: '',
                 password: '',
                 errMsg: '',
                 isTips: false
@@ -57,17 +57,17 @@
         },
         methods: {
             login () {
-                if (!this.userName || !this.password) {
+                if (!this.account || !this.password) {
                     this.isTips = true
                     this.errMsg = '用户名、密码不能为空'
                 }
                 this.$ajax.post('/users/login', {
-                    userName: this.userName,
+                    account: this.account,
                     password: this.password
                 }).then(response => {
                     let res = response.data
-                    if (res.status === '0') {
-                        this.$store.commit('SET_USERNAME', res.result.user.userName)
+                    if (res.status === '1') {
+                        this.$store.commit('SET_USERNAME', res.result.user.username)
                         setCookie('sessionId', res.result.sessionId)
                         this.$router.push('/admin')
                     } else {

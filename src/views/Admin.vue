@@ -60,7 +60,7 @@
                                     <el-dropdown-item command="2">修改密码</el-dropdown-item>
                                     <el-dropdown-item command="3">退出</el-dropdown-item>
                                 </el-dropdown-menu>
-                                <h4 class="login-name">{{ userName }}</h4>
+                                <h4 class="login-name">{{ username }}</h4>
                             </el-dropdown>
                         </el-col>
                     </el-row>
@@ -75,19 +75,16 @@
 
 <script type="text/ecmascript-6">
 import { mapState } from 'vuex'
-import { delCookie, getCookie } from '../util/cookies'
+import { delCookie } from '../util/cookies'
 export default {
     data () {
         return {
             isCollapse: false
         }
     },
-    mounted () {
-        getCookie('sessionId')
-    },
     computed: {
         ...mapState([
-            'userName'
+            'username'
         ])
     },
     methods: {

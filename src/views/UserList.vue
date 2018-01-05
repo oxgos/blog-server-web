@@ -1,11 +1,16 @@
 <template>
   <div>
-    <div class="source">
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/admin' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <el-row class="source">
+      <el-col :span="12">
+          <el-breadcrumb separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item :to="{ path: '/admin' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>用户列表</el-breadcrumb-item>
+          </el-breadcrumb>
+      </el-col>
+      <el-col :span="1" :offset="11">
+          <el-button @click="addUser" type="success" size="mini">添加</el-button>
+      </el-col>
+    </el-row>
     <el-table
       :data="tableData"
       stripe
@@ -86,6 +91,7 @@ export default {
           }
         }
         return {
+          users: [],
           modifyPwdForm: {
             pass: '',
             checkPass: ''
@@ -100,22 +106,52 @@ export default {
           },
           pwdModalFlag: false,
           editModalFlag: false,
-          tableData: [{
-            account: 'admin',
-            username: '小郭',
-            role: '超级管理员'
-          }, {
-            account: 'admin2017',
-            username: '小李',
-            role: '管理员'
-          }],
+          tableData: [],
           form: {
             role: ''
           },
           formLabelWidth: '120px'
         }
     },
+    mounted () {
+      this.loadingUser()
+    },
     methods: {
+      loadingUser () {
+        let userRole = ''
+        this.$ajax.get('/users').then(response => {
+          let res = response.data
+          if (res.status === '1') {
+            this.users = res.result
+            for (let i = 0; i < this.users.length; i++) {
+              switch (this.users[i].role) {
+                case 0:
+                  userRole = '普通用户'
+                  break
+                case 1:
+                  userRole = '邮件激活后的用户'
+                  break
+                case 2:
+                  userRole = '高级用户'
+                  break
+                case 10:
+                  userRole = '管理'
+                  break
+                case 50:
+                  userRole = '超级管理员'
+                  break
+              }
+              this.tableData[i] = {
+                account: this.users[i].account,
+                username: this.users[i].username,
+                role: userRole
+              }
+            }
+            console.log(this.tableData)
+          }
+        })
+      },
+      addUser () {},
       modalChange () {
         this.pwdModalFlag = false
         this.editModalFlag = false

@@ -3,6 +3,7 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 import store from './store'
+import { getCookie } from './util/cookies'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
@@ -13,9 +14,14 @@ Vue.prototype.$ajax = axios
 Vue.config.productionTip = false
 
 router.beforeEach((to, from, next) => {
+  let sessionId = getCookie('sessionId')
   if (to.path !== '/') {
-    axios.get('/users/checklogin').then(res => {
-      if (res.data.status === '1') {
+    axios.post('/users/checklogin', {
+        'sessionId': sessionId
+    }).then(response => {
+      let res = response.data
+      if (res.status === '1') {
+        store.commit('SET_USERNAME', res.result.userName)
         next()
       } else {
         next('/')

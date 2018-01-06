@@ -18,25 +18,25 @@
       <el-table-column
         prop="account"
         label="帐号"
-        >
+      >
       </el-table-column>
       <el-table-column
         prop="username"
         label="用户名"
-        >
+      >
       </el-table-column>
       <el-table-column
         prop="role"
         label="权限"
-        >
+      >
       </el-table-column>
       <el-table-column
         label="操作"
-        >
+      >
         <template slot-scope="scope">
           <el-button type="primary" size="mini"  @click="pwdModalFlag = true">修改密码</el-button>
           <el-button type="warning" size="mini"  @click="editModalFlag = true">权限设置</el-button>
-          <el-button type="danger" size="mini">删除</el-button>
+          <el-button type="danger" size="mini" @click="showRemoveModal(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -89,6 +89,15 @@
       <div slot="footer" class="dialog-footer">
           <el-button @click="addNewUser">确 定</el-button>
           <el-button type="danger" @click="resetForm('addUserForm')">重 置</el-button>
+      </div>
+    </modal>
+    <modal :dialogFormVisible="removeModalFlag" @modalToggle="modalChange">
+      <p slot="content" style="text-align: center;font-size: 20px;">
+        是否删除用户？
+      </p>
+      <div slot="footer" class="dialog-footer">
+          <el-button @click="modalChange">取 消</el-button>
+          <el-button type="danger" @click="handleDelete">确 定</el-button>
       </div>
     </modal>
   </div>
@@ -165,6 +174,9 @@ export default {
               { validator: validatePass2, trigger: 'blur' }
             ]
           },
+          tempId: '',
+          // 控制删除模态框
+          removeModalFlag: false,
           // 控制修改密码模态框
           pwdModalFlag: false,
           // 控制编辑模态框
@@ -185,12 +197,14 @@ export default {
     },
     methods: {
       loadingUser () {
+        var _data = []
         let userRole = ''
         this.$ajax.get('/users').then(response => {
           let res = response.data
           if (res.status === '1') {
             this.users = res.result
             for (let i = 0; i < this.users.length; i++) {
+              var obj = {}
               switch (this.users[i].role) {
                 case 0:
                   userRole = '普通用户'
@@ -208,12 +222,13 @@ export default {
                   userRole = '超级管理员'
                   break
               }
-              this.tableData[i] = {
-                account: this.users[i].account,
-                username: this.users[i].username,
-                role: userRole
-              }
+              obj.id = this.users[i]._id
+              obj.account = this.users[i].account
+              obj.username = this.users[i].account
+              obj.role = userRole
+              _data[i] = obj
             }
+            this.tableData = _data
           }
         })
       },
@@ -221,10 +236,34 @@ export default {
         this.$ajax.post('/users/newAccount', {
           account: this.addUserForm.account,
           username: this.addUserForm.username,
-          password: this.addUserForm.password
+          password: this.addUserForm.pass
         }).then(res => {
           if (res.data.status === '1') {
-            alert(res.data.msg)
+            this.$message({
+              message: res.data.msg,
+              type: 'success'
+            })
+            this.addModalFlag = false
+          }
+        })
+      },
+      // 表格里删除的方法，参数一: 行的索引， 参数二： 对应的tableData数据
+      showRemoveModal (index, row) {
+        this.removeModalFlag = true
+        this.tempId = row.id
+      },
+      handleDelete () {
+        this.$ajax.delete('/users/delUser', {
+          params: {
+            id: this.tempId
+          }
+        }).then(res => {
+          if (res.data.status === '1') {
+            this.$message({
+              message: res.data.msg,
+              type: 'success'
+            })
+            this.removeModalFlag = false
           }
         })
       },
@@ -232,6 +271,7 @@ export default {
         this.pwdModalFlag = false
         this.editModalFlag = false
         this.addModalFlag = false
+        this.removeModalFlag = false
       },
       resetForm (formName) {
         this.$refs[formName].resetFields()

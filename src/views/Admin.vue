@@ -6,7 +6,8 @@
                     <el-col :span="24">
                         <el-menu
                             :collapse="isCollapse"
-                            default-active="2"
+                            default-active="1-1"
+                            :default-openeds="openeds"
                             class="el-menu-vertical-demo"
                             @open="handleOpen"
                             @close="handleClose"
@@ -22,7 +23,7 @@
                                 </template>
                                 <el-menu-item-group>
                                     <template slot="title">分组</template>
-                                    <el-menu-item index="/admin/userList">用户列表</el-menu-item>
+                                    <el-menu-item index="1-1" route="/admin/userList">用户列表</el-menu-item>
                                     <el-menu-item index="1-2">权限管理</el-menu-item>
                                 </el-menu-item-group>
                             </el-submenu>
@@ -53,7 +54,7 @@
                             </div>
                             <el-dropdown @command="handleCommand">
                                 <span class="el-dropdown-link">
-                                    超级管理员<i class="el-icon-arrow-down el-icon--right"></i>
+                                    {{ formatRole }}<i class="el-icon-arrow-down el-icon--right"></i>
                                 </span>
                                 <el-dropdown-menu slot="dropdown">
                                     <el-dropdown-item command="1">基本资料</el-dropdown-item>
@@ -74,17 +75,21 @@
 </template>
 
 <script type="text/ecmascript-6">
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import { delCookie } from '../util/cookies'
 export default {
     data () {
         return {
-            isCollapse: false
+            isCollapse: false,
+            openeds: [1]
         }
     },
     computed: {
         ...mapState([
             'username'
+        ]),
+        ...mapGetters([
+            'formatRole'
         ])
     },
     methods: {
@@ -99,6 +104,7 @@ export default {
               this.$ajax.get('/users/logout').then(res => {
                   if (res.data.status === '1') {
                       this.$store.commit('SET_USERNAME', '')
+                      this.$store.commit('SET_ROLE', '')
                       delCookie('sessionId')
                       this.$router.push('/')
                   }

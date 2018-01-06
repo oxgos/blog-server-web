@@ -34,16 +34,16 @@
         label="操作"
       >
         <template slot-scope="scope">
-          <el-button type="primary" size="mini"  @click="pwdModalFlag = true">修改密码</el-button>
-          <el-button type="warning" size="mini"  @click="editModalFlag = true">权限设置</el-button>
+          <el-button type="primary" size="mini"  @click="showPwdModal(scope.$index, scope.row)" v-if="userRole >= 40">修改密码</el-button>
+          <el-button type="warning" size="mini"  @click="showRoleModal(scope.$index, scope.row)">权限设置</el-button>
           <el-button type="danger" size="mini" @click="showRemoveModal(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <modal :dialogFormVisible="editModalFlag" @modalToggle="modalChange" :title="'权限信息'">
-      <el-form :model="form" slot="content">
+      <el-form :model="roleForm" slot="content">
           <el-form-item label="权限设置" :label-width="formLabelWidth">
-              <el-select placeholder="选择用户的权限"  v-model="form.role">
+              <el-select placeholder="选择用户的权限"  v-model="roleForm.role">
                   <el-option label="普通用户" value="0"></el-option>
                   <el-option label="邮件激活后的用户" value="1"></el-option>
                   <el-option label="高级用户" value="2"></el-option>
@@ -54,7 +54,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
           <el-button @click="modalChange">取 消</el-button>
-          <el-button type="primary" @click="modalChange">确 定</el-button>
+          <el-button type="primary" @click="modifyRole">确 定</el-button>
       </div>
     </modal>
     <modal :dialogFormVisible="pwdModalFlag" @modalToggle="modalChange" :title="'修改密码'">
@@ -67,7 +67,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-          <el-button @click="modalChange">确 定</el-button>
+          <el-button @click="handleModify">确 定</el-button>
           <el-button type="danger" @click="resetForm('modifyPwdForm')">重 置</el-button>
       </div>
     </modal>
@@ -186,11 +186,16 @@ export default {
           // 存放表格数据
           tableData: [],
           // 双向绑定选项卡
-          form: {
+          roleForm: {
             role: ''
           },
           formLabelWidth: '120px'
         }
+    },
+    computed: {
+      userRole () {
+        return this.$store.state.role
+      }
     },
     mounted () {
       this.loadingUser()
@@ -233,19 +238,27 @@ export default {
         })
       },
       addNewUser () {
-        this.$ajax.post('/users/newAccount', {
-          account: this.addUserForm.account,
-          username: this.addUserForm.username,
-          password: this.addUserForm.pass
-        }).then(res => {
-          if (res.data.status === '1') {
-            this.$message({
-              message: res.data.msg,
-              type: 'success'
-            })
-            this.addModalFlag = false
-          }
-        })
+        if (this.addUserForm.pass === this.addUserForm.checkPass) {
+          this.$ajax.post('/users/newAccount', {
+            account: this.addUserForm.account,
+            username: this.addUserForm.username,
+            password: this.addUserForm.checkPass
+          }).then(res => {
+            if (res.data.status === '1') {
+              this.$message({
+                message: res.data.msg,
+                type: 'success'
+              })
+              this.addModalFlag = false
+              this.resetForm('addUserForm')
+            }
+          })
+        } else {
+          this.$message({
+              message: '两次密码输入不一致,请重新输入',
+              type: 'error'
+          })
+        }
       },
       // 表格里删除的方法，参数一: 行的索引， 参数二： 对应的tableData数据
       showRemoveModal (index, row) {
@@ -265,6 +278,58 @@ export default {
             })
             this.removeModalFlag = false
           }
+        })
+      },
+      // 最高权限修改密码
+      showPwdModal (index, row) {
+        this.pwdModalFlag = true
+        this.tempId = row.id
+      },
+      handleModify () {
+        if (this.modifyPwdForm.pass !== '' && this.modifyPwdForm.checkPass !== '' && this.modifyPwdForm.pass === this.modifyPwdForm.checkPass) {
+          this.$ajax.post('/users/adminPwd', {
+            id: this.tempId,
+            password: this.modifyPwdForm.checkPass
+          }).then(res => {
+            if (res.data.status === '1') {
+              this.$message({
+                message: res.data.msg,
+                type: 'success'
+              })
+              this.pwdModalFlag = false
+              this.resetForm('modifyPwdForm')
+            }
+          })
+        } else {
+          this.$message({
+              message: '两次密码输入不一致,请重新输入',
+              type: 'error'
+          })
+        }
+      },
+      // 修改权限
+      showRoleModal (index, row) {
+        this.editModalFlag = true
+        this.tempId = row.id
+      },
+      modifyRole () {
+        this.$ajax.post('/users/modifyRole', {
+          role: this.roleForm.role,
+          id: this.tempId
+        }).then(res => {
+          if (res.data.status === '1') {
+            this.$message({
+              message: res.data.msg,
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: res.data.msg,
+              type: 'error'
+            })
+          }
+          this.editModalFlag = false
+          this.roleForm.role = ''
         })
       },
       modalChange () {

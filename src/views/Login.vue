@@ -35,7 +35,7 @@
                         </svg>
                     </span>
                     <div class="input-group">
-                        <input id="pwd" type="password" placeholder="密码" v-model="password">
+                        <input id="pwd" type="password" placeholder="密码" v-model="password"  @keyup.enter="login">
                     </div>
                 </div>
             </div>

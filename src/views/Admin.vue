@@ -27,10 +27,17 @@
                                     <el-menu-item index="1-2">权限管理</el-menu-item>
                                 </el-menu-item-group>
                             </el-submenu>
-                            <el-menu-item index="2">
-                                <i class="el-icon-share"></i>
-                                <span slot="title">文章管理</span>
-                            </el-menu-item>
+                            <el-submenu index="2">
+                                <template slot="title">
+                                    <i class="el-icon-share"></i>
+                                    <span>文章管理</span>
+                                </template>
+                                <el-menu-item-group>
+                                    <template slot="title">分组</template>
+                                    <el-menu-item index="2-1" route="/admin/articleNew">新增文章</el-menu-item>
+                                    <el-menu-item index="2-2" route="/admin/articleList">文章列表</el-menu-item>
+                                </el-menu-item-group>
+                            </el-submenu>
                             <el-menu-item index="3">
                                 <i class="el-icon-star-on"></i>
                                 <span slot="title">评论管理</span>

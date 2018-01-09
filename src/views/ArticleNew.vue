@@ -74,7 +74,8 @@ export default {
             this.$ajax.post('/articles/articleNew', {
                 type: type,
                 title: this.title,
-                content: html,
+                mdContent: this.content,
+                htmlContent: html,
                 category: category
             }).then(res => {
                 if (res.data.status === '1') {

@@ -249,6 +249,7 @@ export default {
                 message: res.data.msg,
                 type: 'success'
               })
+              this.loadingUser()
               this.addModalFlag = false
               this.resetForm('addUserForm')
             }
@@ -276,6 +277,8 @@ export default {
               message: res.data.msg,
               type: 'success'
             })
+            // 重新获取新数据
+            this.loadingUser()
             this.removeModalFlag = false
           }
         })

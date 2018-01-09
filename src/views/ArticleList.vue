@@ -1,33 +1,50 @@
 <template>
     <div class="articleList">
+        <el-row class="source">
+            <el-col :span="12">
+                <el-breadcrumb separator-class="el-icon-arrow-right">
+                    <el-breadcrumb-item :to="{ path: '/admin' }">首页</el-breadcrumb-item>
+                    <el-breadcrumb-item>文章列表</el-breadcrumb-item>
+                </el-breadcrumb>
+            </el-col>
+        </el-row>
         <el-table
             ref="multipleTable"
-            :data="tableData3"
+            :data="tableData"
             tooltip-effect="dark"
             style="width: 100%"
             @selection-change="handleSelectionChange">
             <el-table-column
                 type="selection"
-                width="55"
             >
             </el-table-column>
             <el-table-column
-                label="创建日期"
-                width="120"
+                prop="type"
+                label="文章类型"
             >
-                <template slot-scope="scope">{{ scope.row.date }}</template>
             </el-table-column>
             <el-table-column
-                prop="name"
+                prop="title"
                 label="文章标题"
-                width="120"
             >
             </el-table-column>
             <el-table-column
-                prop="address"
-                label="分类"
-                show-overflow-tooltip
+                prop="category"
+                label="文章分类"
             >
+            </el-table-column>
+            <el-table-column
+                prop="createdAt"
+                label="创建时间"
+            >
+            </el-table-column>
+            <el-table-column
+                label="操作"
+            >
+                <template slot-scope="scope">
+                    <el-button type="primary" size="mini" @click="showArticleDetail(scope.$index, scope.row)">查看</el-button>
+                    <el-button type="danger" size="mini" @click="delArticle(scope.$index, scope.row)">删除</el-button>
+                </template>
             </el-table-column>
         </el-table>
     </div>
@@ -37,36 +54,7 @@
 export default {
     data () {
         return {
-            articles: [],
-            tableData3: [{
-                date: '2016-05-03',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-02',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-04',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-01',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-08',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-06',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-07',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }],
+            tableData: [],
             multipleSelection: []
         }
     },
@@ -75,15 +63,58 @@ export default {
     },
     methods: {
         loadArticle () {
+            var data = []
             this.$ajax.get('/articles').then(response => {
                 let res = response.data
                 if (res.status === '1') {
-                    this.articles = res.result
+                    res.result.forEach(item => {
+                        let obj = {}
+                        obj.id = item._id
+                        obj.type = item.type
+                        obj.title = item.title
+                        obj.category = item.category
+                        obj.createdAt = item.meta.createdAt.split('T')[0]
+                        data.push(obj)
+                    })
+                    this.tableData = data
                 }
             })
         },
         handleSelectionChange (val) {
             this.multipleSelection = val
+        },
+        showArticleDetail (index, row) {
+            this.$ajax.get('/articles/detail', {
+                params: {
+                    id: row.id
+                }
+            }).then(res => {
+                if (res.data.status === '1') {
+                    console.log(res.data.result)
+                }
+            })
+        },
+        delArticle (index, row) {
+            var flag = false
+            this.multipleSelection.forEach(item => {
+                if (item.id === row.id) {
+                    flag = true
+                }
+            })
+            if (flag) {
+                this.$ajax.delete('/articles/delete', {
+                    params: {
+                        id: row.id
+                    }
+                }).then(res => {
+                    if (res.data.status === '1') {
+                        this.$message.error(res.data.msg)
+                        this.loadArticle()
+                    }
+                })
+            } else {
+                this.$message.warning('请勾选需删除的文章')
+            }
         }
     },
     components: {
@@ -93,5 +124,6 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-
+    .source
+        padding 0 10px 20px 10px
 </style>

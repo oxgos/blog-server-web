@@ -84,7 +84,13 @@ export default {
             this.multipleSelection = val
         },
         showArticleDetail (index, row) {
-            this.$ajax.get('/articles/detail', {
+            this.$router.push({
+                path: '/admin/articleDetail',
+                query: {
+                    id: row.id
+                }
+            })
+            /* this.$ajax.get('/articles/detail', {
                 params: {
                     id: row.id
                 }
@@ -92,7 +98,7 @@ export default {
                 if (res.data.status === '1') {
                     console.log(res.data.result)
                 }
-            })
+            }) */
         },
         delArticle (index, row) {
             var flag = false

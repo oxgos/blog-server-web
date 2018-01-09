@@ -5,6 +5,7 @@ import Admin from '@/views/Admin'
 import UserList from '@/views/UserList'
 import ArticleNew from '@/views/ArticleNew'
 import ArticleList from '@/views/ArticleList'
+import ArticleDetail from '@/views/ArticleDetail'
 
 Vue.use(Router)
 
@@ -34,6 +35,11 @@ export default new Router({
           path: 'articleList',
           name: 'articleList',
           component: ArticleList
+        },
+        {
+          path: 'articleDetail',
+          name: 'articleDetail',
+          component: ArticleDetail
         }
       ]
     }

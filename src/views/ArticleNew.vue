@@ -4,8 +4,8 @@
             <el-col :span="14">
                 <el-input class="input-with-select" v-model="title" placeholder="请输入标题">
                     <el-select v-model="articleType" slot="prepend" placeholder="请选择" style="width: 130px;">
-                        <el-option label="原创" value="1"></el-option>
-                        <el-option label="转载" value="2"></el-option>
+                        <el-option label="原创" value="原创"></el-option>
+                        <el-option label="转载" value="转载"></el-option>
                     </el-select>
                 </el-input>
             </el-col>
@@ -20,9 +20,9 @@
                 文章分类:
                 <template>
                     <el-radio-group v-model="categoryType">
-                        <el-radio :label="1">前端分享</el-radio>
-                        <el-radio :label="2">后端分享</el-radio>
-                        <el-radio :label="3">工作心得</el-radio>
+                        <el-radio :label="'前端分享'">前端分享</el-radio>
+                        <el-radio :label="'后端分享'">后端分享</el-radio>
+                        <el-radio :label="'工作心得'">工作心得</el-radio>
                     </el-radio-group>
                 </template>
             </el-col>
@@ -43,40 +43,19 @@ export default {
             content: '',
             title: '',
             articleType: '',
-            categoryType: 1
+            categoryType: '前端分享'
         }
     },
     methods: {
         newArticle () {
-            var category = ''
             var html = ''
-            var type = ''
-            switch (this.categoryType) {
-                case 1:
-                    category = '前端分享'
-                    break
-                case 2:
-                    category = '后端分享'
-                    break
-                case 3:
-                    category = '工作心得'
-                    break
-            }
-            switch (this.articleType) {
-                case '1':
-                    type = '原创'
-                    break
-                case '2':
-                    type = '转载'
-                    break
-            }
             html = this.$refs.md.s_markdown.render(this.content)
             this.$ajax.post('/articles/articleNew', {
-                type: type,
+                type: this.articleType,
                 title: this.title,
                 mdContent: this.content,
                 htmlContent: html,
-                category: category
+                category: this.categoryType
             }).then(res => {
                 if (res.data.status === '1') {
                     this.$message({

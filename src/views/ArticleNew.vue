@@ -19,10 +19,8 @@
             <el-col :span="12" :offset="2">
                 文章分类:
                 <template>
-                    <el-radio-group v-model="categoryType">
-                        <el-radio :label="'前端分享'">前端分享</el-radio>
-                        <el-radio :label="'后端分享'">后端分享</el-radio>
-                        <el-radio :label="'工作心得'">工作心得</el-radio>
+                    <el-radio-group v-model="categoryId">
+                        <el-radio v-for="item in categoryType" :key="item.id" :label="item.id">{{ item.name }}</el-radio>
                     </el-radio-group>
                 </template>
             </el-col>
@@ -43,10 +41,26 @@ export default {
             content: '',
             title: '',
             articleType: '',
-            categoryType: '前端分享'
+            categoryId: '',
+            categoryType: []
         }
     },
+    created () {
+        this.loadingCategory()  
+    },
     methods: {
+        loadingCategory () {
+            this.$ajax.get('/categories').then(res => {
+                if (res.data.status === '1') {
+                    res.data.result.forEach(item => {
+                        let obj = {}
+                        obj.id = item._id
+                        obj.name = item.name
+                        this.categoryType.push(obj)
+                    })
+                }
+            })
+        },
         newArticle () {
             var html = ''
             html = this.$refs.md.s_markdown.render(this.content)
@@ -55,7 +69,7 @@ export default {
                 title: this.title,
                 mdContent: this.content,
                 htmlContent: html,
-                category: this.categoryType
+                categoryId: this.categoryId
             }).then(res => {
                 if (res.data.status === '1') {
                     this.$message({

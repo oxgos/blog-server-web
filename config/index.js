@@ -16,6 +16,9 @@ module.exports = {
       },
       '/articles': {
         target: 'http://localhost:3000'
+      },
+      '/categories': {
+        target: 'http://localhost:3000'
       }
     },
 

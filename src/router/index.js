@@ -6,6 +6,7 @@ import UserList from '@/views/UserList'
 import ArticleNew from '@/views/ArticleNew'
 import ArticleList from '@/views/ArticleList'
 import ArticleDetail from '@/views/ArticleDetail'
+import ArticleCategory from '@/views/ArticleCategory'
 
 Vue.use(Router)
 
@@ -40,6 +41,11 @@ export default new Router({
           path: 'articleDetail',
           name: 'articleDetail',
           component: ArticleDetail
+        },
+        {
+          path: 'articleCategory',
+          name: 'articleCategory',
+          component: ArticleCategory
         }
       ]
     }

@@ -36,6 +36,7 @@
                                     <template slot="title">分组</template>
                                     <el-menu-item index="2-1" route="/admin/articleNew">新增文章</el-menu-item>
                                     <el-menu-item index="2-2" route="/admin/articleList">文章列表</el-menu-item>
+                                    <el-menu-item index="2-3" route="/admin/articleCategory">文章分类</el-menu-item>
                                 </el-menu-item-group>
                             </el-submenu>
                             <el-menu-item index="3">

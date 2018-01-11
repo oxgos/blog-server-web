@@ -29,9 +29,7 @@
                 文章分类:
                 <template>
                     <el-radio-group v-model="categoryType">
-                        <el-radio :label="'前端分享'">前端分享</el-radio>
-                        <el-radio :label="'后端分享'">后端分享</el-radio>
-                        <el-radio :label="'工作心得'">工作心得</el-radio>
+                        <el-radio v-for="item in categories" :key="item._id" :label="item._id">{{ item.name }}</el-radio>
                     </el-radio-group>
                 </template>
             </el-col>
@@ -53,7 +51,8 @@
                title: '',
                articleType: '',
                content: '',
-               categoryType: '前端分享'
+               categoryType: '',
+               categories: []
            }
        },
        mounted () {
@@ -68,10 +67,12 @@
                     }
                 }).then(res => {
                     if (res.data.status === '1') {
-                        this.title = res.data.result.title
-                        this.articleType = res.data.result.type
-                        this.content = res.data.result.mdContent
-                        this.categoryType = res.data.result.category
+                        var response = res.data.result
+                        this.title = response.article.title
+                        this.articleType = response.article.type
+                        this.content = response.article.mdContent
+                        this.categoryType = response.article.category._id
+                        this.categories = response.categories
                     }
                 })
            },

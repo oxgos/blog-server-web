@@ -72,7 +72,7 @@ export default {
                         obj.id = item._id
                         obj.type = item.type
                         obj.title = item.title
-                        obj.category = item.category
+                        obj.category = item.category.name
                         obj.createdAt = item.meta.createdAt.split('T')[0]
                         data.push(obj)
                     })
@@ -90,15 +90,6 @@ export default {
                     id: row.id
                 }
             })
-            /* this.$ajax.get('/articles/detail', {
-                params: {
-                    id: row.id
-                }
-            }).then(res => {
-                if (res.data.status === '1') {
-                    console.log(res.data.result)
-                }
-            }) */
         },
         delArticle (index, row) {
             var flag = false
@@ -122,9 +113,6 @@ export default {
                 this.$message.warning('请勾选需删除的文章')
             }
         }
-    },
-    components: {
-
     }
 }
 </script>

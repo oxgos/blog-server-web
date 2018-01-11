@@ -46,7 +46,7 @@ export default {
         }
     },
     created () {
-        this.loadingCategory()  
+        this.loadingCategory()
     },
     methods: {
         loadingCategory () {

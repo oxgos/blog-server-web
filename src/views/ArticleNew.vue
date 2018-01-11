@@ -62,23 +62,30 @@ export default {
             })
         },
         newArticle () {
-            var html = ''
-            html = this.$refs.md.s_markdown.render(this.content)
-            this.$ajax.post('/articles/articleNew', {
-                type: this.articleType,
-                title: this.title,
-                mdContent: this.content,
-                htmlContent: html,
-                categoryId: this.categoryId
-            }).then(res => {
-                if (res.data.status === '1') {
-                    this.$message({
-                        message: res.data.msg,
-                        type: 'success'
-                    })
-                    this.$router.push('/admin/articleList')
-                }
-            })
+            if (this.articleType && this.title && this.content && this.categoryId) {
+                let html = ''
+                html = this.$refs.md.s_markdown.render(this.content)
+                this.$ajax.post('/articles/articleNew', {
+                    type: this.articleType,
+                    title: this.title,
+                    mdContent: this.content,
+                    htmlContent: html,
+                    categoryId: this.categoryId
+                }).then(res => {
+                    if (res.data.status === '1') {
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'success'
+                        })
+                        this.$router.push('/admin/articleList')
+                    }
+                })
+            } else {
+                this.$message({
+                    message: '请把文章选项都填上,再提交',
+                    type: 'error'
+                })
+            }
         }
     },
     components: {

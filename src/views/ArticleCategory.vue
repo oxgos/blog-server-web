@@ -150,6 +150,7 @@
                             if (res.data.status === '1') {
                                 this.$message.success(res.data.msg)
                                 this.loadingCategory()
+                                this.categoryName = ''
                             }
                         })
                     } else {

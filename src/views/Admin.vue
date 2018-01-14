@@ -6,7 +6,7 @@
                     <el-col :span="24">
                         <el-menu
                             :collapse="isCollapse"
-                            default-active="1-1"
+                            :default-active="navActive"
                             :default-openeds="openeds"
                             class="el-menu-vertical-demo"
                             @open="handleOpen"
@@ -89,7 +89,8 @@ export default {
     data () {
         return {
             isCollapse: false,
-            openeds: [1]
+            openeds: [1],
+            navActive: '1-1'
         }
     },
     computed: {
@@ -120,8 +121,14 @@ export default {
           }
       }
     },
-    components: {
-
+    watch: {
+        '$route' (to, from) {
+            switch (to.path.slice(7)) {
+                case 'articleList':
+                    this.navActive = '2-2'
+                    break
+            }
+        }
     }
 }
 </script>

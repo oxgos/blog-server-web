@@ -7,10 +7,8 @@
                     <el-breadcrumb-item>文章分类</el-breadcrumb-item>
                 </el-breadcrumb>
             </el-col>
-            <el-col :span="4" :offset="8">
-                <el-input v-model="categoryName" placeholder="请输入分类名称">
-                    <el-button @click="addCategory" slot="append" type="success" style="background-color: #67c23a; color: #fff;border-color: #67c23a;">添加</el-button>
-                </el-input>
+            <el-col :span="1" :offset="11">
+                <el-button @click="addModal = true" type="success" size="mini">添加</el-button>
             </el-col>
         </el-row>
         <el-table
@@ -28,6 +26,11 @@
             >
             </el-table-column>
             <el-table-column
+                prop="path"
+                label="前端显示路径"
+            >
+            </el-table-column>
+            <el-table-column
                 prop="visible"
                 label="是否在前台显示"
             >
@@ -35,7 +38,9 @@
                     <el-switch
                         v-model="scope.row.visible"
                         active-color="#13ce66"
-                        inactive-color="#ff4949">
+                        inactive-color="#ff4949"
+                        @change="showToggle(scope.row.visible, scope.row.id)"
+                    >
                     </el-switch>
                 </template>
             </el-table-column>
@@ -48,14 +53,37 @@
                 </template>
             </el-table-column>
         </el-table>
-        <Modal :dialogFormVisible="modifyModal" :title="'修改分类'" @modalToggle="modalToggle">
-            <div slot="content">
+        <Modal :dialogFormVisible="addModal" :title="'添加分类'" @modalToggle="modalToggle">
+            <el-form slot="content"  :model="categoryForm" status-icon :rules="rules" ref="categoryForm" label-width="100px">
+                <el-form-item label="分类名称" prop="categoryName">
+                    <el-input type="text" v-model="categoryForm.categoryName" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="分类路径" prop="path">
+                    <el-input type="text" v-model="categoryForm.path" auto-complete="off">
+                        <template slot="append">格式: /frontend</template>
+                    </el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
                 <el-row>
-                    <el-col :span="12" :offset="5">
-                        <el-input v-model="modifyName" placeholder="输入新的分类名"></el-input>
+                    <el-col :span="12" :offset="2">
+                        <el-button type="primary" size="mini" plain @click="addCategory">确定</el-button>
+                        <el-button type="danger" size="mini" plain @click="modalToggle">取消</el-button>
                     </el-col>
                 </el-row>
             </div>
+        </Modal>
+        <Modal :dialogFormVisible="modifyModal" :title="'修改分类'" @modalToggle="modalToggle">
+            <el-form slot="content"  :model="categoryForm" status-icon :rules="rules" ref="categoryForm" label-width="100px">
+                <el-form-item label="分类名称" prop="categoryName">
+                    <el-input type="text" v-model="categoryForm.categoryName" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="分类路径" prop="path">
+                    <el-input type="text" v-model="categoryForm.path" auto-complete="off">
+                        <template slot="append">格式: /frontend</template>
+                    </el-input>
+                </el-form-item>
+            </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-row>
                     <el-col :span="12" :offset="2">
@@ -72,14 +100,46 @@
     import Modal from '@/components/Modal'
     export default {
         data () {
+            var validateName = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('分类名称不能为空'))
+                } else {
+                    callback()
+                }
+            }
+                var validatePath = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('分类路径不能为空'))
+                } else {
+                    callback()
+                }
+            }
             return {
+                    // 表格所有数据
                     tableData: [],
-                    categoryName: '',
-                    modifyName: '',
+                    // 修改分类的名称
                     modifyModal: false,
+                    // 添加分类模态框显示与否
+                    addModal: false,
+                    categoryForm: {
+                        // 添加分类的名称
+                        categoryName: '',
+                        // 添加分类的前台显示路径
+                        path: ''
+                    },
+                    // 添加模态框的验证
+                    rules: {
+                        categoryName: [
+                            { validator: validateName, trigger: 'blur' }
+                        ],
+                        path: [
+                            { validator: validatePath, trigger: 'blur' }
+                        ]
+                    },
+                    // 临时存放的id
                     tempId: '',
-                    tempVisible: '',
-                    timer: ''
+                    // 临时存放是否前台显示
+                    tempVisible: ''
             }
         },
         mounted () {
@@ -96,6 +156,7 @@
                             obj.id = item._id
                             obj.name = item.name
                             obj.articleCount = item.articles.length
+                            obj.path = item.path
                             obj.visible = item.visible
                             arr.push(obj)
                         })
@@ -103,17 +164,18 @@
                     }
                 })
             },
+            // 显示修改模态框
             showModifyModal (index, row) {
                 this.modifyModal = true
                 this.tempId = row.id
-                this.tempVisible = row.visible
             },
+            // 修改分类
             modifyCategory () {
-                if (this.modifyName) {
+                if (this.categoryForm.categoryName && this.categoryForm.path) {
                     this.$ajax.post('/categories/modify', {
                         id: this.tempId,
-                        visible: this.tempVisible,
-                        name: this.modifyName
+                        path: this.categoryForm.path,
+                        name: this.categoryForm.categoryName
                     }).then(res => {
                         if (res.data.status === '1') {
                             this.$message.success(res.data.msg)
@@ -125,9 +187,24 @@
                     this.$message.error('分类名不能为空')
                 }
             },
-            modalToggle () {
-                this.modifyModal = false
+            // 前端是否显示
+            showToggle (visible, id) {
+                this.$ajax.post('/categories/modify', {
+                    id: id,
+                    visible: visible
+                }).then(res => {
+                    if (res.data.status === '1') {
+                        this.$message.success(res.data.msg)
+                    }
+                })
             },
+            // 关闭模态框
+            modalToggle () {
+                this.addModal = false
+                this.modifyModal = false
+                this.resetForm('categoryForm')
+            },
+            // 删除分类
             delCategory (index, row) {
                 this.$ajax.delete('/categories/del', {
                     params: {
@@ -140,23 +217,26 @@
                     }
                 })
             },
+            // 添加分类
             addCategory () {
-                this.timer && clearTimeout(this.timer)
-                this.timer = setTimeout(() => {
-                    if (this.categoryName) {
-                        this.$ajax.post('/categories/new', {
-                            name: this.categoryName
-                        }).then(res => {
-                            if (res.data.status === '1') {
-                                this.$message.success(res.data.msg)
-                                this.loadingCategory()
-                                this.categoryName = ''
-                            }
-                        })
-                    } else {
-                        this.$message.error('分类名不能为空')
-                    }
-                }, 500)
+                if (this.categoryForm.categoryName && this.categoryForm.path) {
+                    this.$ajax.post('/categories/new', {
+                        name: this.categoryForm.categoryName,
+                        path: this.categoryForm.path
+                    }).then(res => {
+                        if (res.data.status === '1') {
+                            this.$message.success(res.data.msg)
+                            this.modalToggle()
+                            this.loadingCategory()
+                        }
+                    })
+                } else {
+                    this.$message.error('分类名不能为空')
+                }
+            },
+            // 重置表单
+            resetForm (formName) {
+                this.$refs[formName].resetFields()
             }
         },
        components: {

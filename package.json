@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "axios": "^0.17.1",
+    "chart.js": "^2.7.1",
     "element-ui": "^2.0.11",
     "mavon-editor": "^2.4.16",
     "vue": "^2.5.2",

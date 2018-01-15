@@ -90,7 +90,7 @@ export default {
         return {
             isCollapse: false,
             openeds: [1],
-            navActive: '1-1'
+            navActive: ''
         }
     },
     computed: {
@@ -124,9 +124,23 @@ export default {
     watch: {
         '$route' (to, from) {
             switch (to.path.slice(7)) {
+                case 'userList':
+                    this.navActive = '1-1'
+                    break
+                case 'articleNew':
+                    this.navActive = '2-1'
+                    break
                 case 'articleList':
                     this.navActive = '2-2'
                     break
+                case 'articleCategory':
+                    this.navActive = '2-3'
+                    break
+                case '':
+                    this.navActive = ''
+                    break
+                default:
+                    this.navActive = '1-1'
             }
         }
     }

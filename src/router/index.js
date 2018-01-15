@@ -2,11 +2,12 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/views/Login'
 import Admin from '@/views/Admin'
-import UserList from '@/views/UserList'
-import ArticleNew from '@/views/ArticleNew'
-import ArticleList from '@/views/ArticleList'
-import ArticleDetail from '@/views/ArticleDetail'
-import ArticleCategory from '@/views/ArticleCategory'
+import Index from '@/views/Index'
+import UserList from '@/views/User//UserList'
+import ArticleNew from '@/views/Article/ArticleNew'
+import ArticleList from '@/views/Article/ArticleList'
+import ArticleDetail from '@/views/Article/ArticleDetail'
+import ArticleCategory from '@/views/Article/ArticleCategory'
 
 Vue.use(Router)
 
@@ -22,6 +23,11 @@ export default new Router({
       name: 'Admin',
       component: Admin,
       children: [
+        {
+          path: '/',
+          name: 'Index',
+          component: Index
+        },
         {
           path: 'userList',
           name: 'UserList',

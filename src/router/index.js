@@ -3,7 +3,8 @@ import Router from 'vue-router'
 import Login from '@/views/Login'
 import Admin from '@/views/Admin'
 import Index from '@/views/Index'
-import UserList from '@/views/User//UserList'
+import UserList from '@/views/User/UserList'
+import Upload from '@/views/User/Upload'
 import ArticleNew from '@/views/Article/ArticleNew'
 import ArticleList from '@/views/Article/ArticleList'
 import ArticleDetail from '@/views/Article/ArticleDetail'
@@ -15,23 +16,29 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Login',
+      name: 'login',
       component: Login
     },
     {
       path: '/admin',
-      name: 'Admin',
+      name: 'admin',
       component: Admin,
+      redirect: '/admin/index',
       children: [
         {
-          path: '/',
-          name: 'Index',
+          path: 'index',
+          name: 'index',
           component: Index
         },
         {
           path: 'userList',
           name: 'UserList',
           component: UserList
+        },
+        {
+          path: 'upload',
+          name: 'upload',
+          component: Upload
         },
         {
           path: 'articleNew',

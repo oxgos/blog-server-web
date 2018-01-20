@@ -24,7 +24,7 @@
                                 <el-menu-item-group>
                                     <template slot="title">分组</template>
                                     <el-menu-item index="1-1" route="/admin/userList">用户列表</el-menu-item>
-                                    <el-menu-item index="1-2">权限管理</el-menu-item>
+                                    <el-menu-item index="1-2" route="/admin/upload">权限管理</el-menu-item>
                                 </el-menu-item-group>
                             </el-submenu>
                             <el-submenu index="2">

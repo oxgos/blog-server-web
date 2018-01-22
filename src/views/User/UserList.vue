@@ -229,7 +229,7 @@ export default {
               }
               obj.id = this.users[i]._id
               obj.account = this.users[i].account
-              obj.username = this.users[i].username
+              obj.username = this.users[i].info.username
               obj.role = userRole
               _data[i] = obj
             }

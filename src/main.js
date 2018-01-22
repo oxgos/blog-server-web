@@ -24,7 +24,7 @@ router.beforeEach((to, from, next) => {
     }).then(response => {
       let res = response.data
       if (res.status === '1') {
-        store.commit('SET_USERNAME', res.result.username)
+        store.commit('SET_USERNAME', res.result.info.username)
         store.commit('SET_ROLE', res.result.role)
         next()
       } else {

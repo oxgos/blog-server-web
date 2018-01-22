@@ -55,6 +55,9 @@
                                 <el-radio-button :label="false">展开</el-radio-button>
                                 <el-radio-button :label="true">收起</el-radio-button>
                             </el-radio-group>
+                            <div class="backToIndex">
+                                <router-link to="/admin">回到首页</router-link>
+                            </div>
                         </el-col>
                         <el-col :span="3" :offset="15">
                             <div class="profile">
@@ -109,16 +112,18 @@ export default {
         // console.log(key, keyPath)
       },
       handleCommand (command) {
-          if (command === '3') {
-              this.$ajax.get('/users/logout').then(res => {
-                  if (res.data.status === '1') {
-                      this.$store.commit('SET_USERNAME', '')
-                      this.$store.commit('SET_ROLE', '')
-                      delCookie('sessionId')
-                      this.$router.push('/')
-                  }
-              })
-          }
+            if (command === '1') {
+                this.$router.push('/admin/userInfo')
+            } else if (command === '3') {
+                this.$ajax.get('/users/logout').then(res => {
+                    if (res.data.status === '1') {
+                        this.$store.commit('SET_USERNAME', '')
+                        this.$store.commit('SET_ROLE', '')
+                        delCookie('sessionId')
+                        this.$router.push('/')
+                    }
+                })
+            }
       }
     },
     watch: {
@@ -202,7 +207,14 @@ export default {
     body > .el-container {
         margin-bottom: 40px;
     }
-    
+
+    .backToIndex
+        display inline-block
+        vertical-align middle
+        margin-left 5px
+        a
+            color #909399
+
     /* .el-container:nth-child(5) .el-aside,
     .el-container:nth-child(6) .el-aside {
         line-height: 260px;

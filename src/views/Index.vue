@@ -1,5 +1,5 @@
 <template>
-    <div class="Index">
+    <div class="adminIndex">
         <el-row>
             <el-col :span="8">
                 <el-collapse v-model="activeNames">
@@ -91,9 +91,6 @@
                     }
                 })
             }
-        },
-        components: {
-
         }
     }
 </script>

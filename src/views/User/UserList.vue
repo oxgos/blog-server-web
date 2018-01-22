@@ -76,9 +76,9 @@
         <el-form-item label="帐号名" prop="account">
           <el-input type="text" v-model="addUserForm.account" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="用户名" prop="username">
+        <!-- <el-form-item label="用户名" prop="username">
           <el-input type="text" v-model="addUserForm.username" auto-complete="off"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="密码" prop="pass">
           <el-input type="password" v-model="addUserForm.pass" auto-complete="off"></el-input>
         </el-form-item>
@@ -229,7 +229,7 @@ export default {
               }
               obj.id = this.users[i]._id
               obj.account = this.users[i].account
-              obj.username = this.users[i].account
+              obj.username = this.users[i].username
               obj.role = userRole
               _data[i] = obj
             }
@@ -241,7 +241,7 @@ export default {
         if (this.addUserForm.pass === this.addUserForm.checkPass) {
           this.$ajax.post('/users/newAccount', {
             account: this.addUserForm.account,
-            username: this.addUserForm.username,
+            // username: this.addUserForm.username,
             password: this.addUserForm.checkPass
           }).then(res => {
             if (res.data.status === '1') {

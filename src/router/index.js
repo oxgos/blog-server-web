@@ -4,6 +4,7 @@ import Login from '@/views/Login'
 import Admin from '@/views/Admin'
 import Index from '@/views/Index'
 import UserList from '@/views/User/UserList'
+import UserInfo from '@/views/User/UserInfo'
 import Upload from '@/views/User/Upload'
 import ArticleNew from '@/views/Article/ArticleNew'
 import ArticleList from '@/views/Article/ArticleList'
@@ -32,8 +33,13 @@ export default new Router({
         },
         {
           path: 'userList',
-          name: 'UserList',
+          name: 'userList',
           component: UserList
+        },
+        {
+          path: 'userInfo',
+          name: 'userInfo',
+          component: UserInfo
         },
         {
           path: 'upload',

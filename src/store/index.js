@@ -5,6 +5,7 @@ import * as mutations from './mutations'
 Vue.use(Vuex)
 
 const state = {
+    userId: '',
     username: '',
     role: '',
     infoId: '',

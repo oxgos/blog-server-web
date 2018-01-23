@@ -35,9 +35,6 @@
                 </el-form>
             </el-col>
         </el-row>
-        <!-- <div>
-            <img src="/upload/1516672198314.jpeg" alt="">
-        </div> -->
     </div>
 </template>
 
@@ -105,6 +102,8 @@
                 this.$ajax.post('/users/updateInfo', formData).then(res => {
                     if (res.data.status === '1') {
                         this.$message.success(res.data.msg)
+                        console.log(res.data.result)
+                        this.$store.commit('SET_USERNAME', res.data.result.username)
                         this.$router.push('/admin/articleList')
                     }
                 })

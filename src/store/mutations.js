@@ -1,3 +1,7 @@
+export const SET_USERID = (state, val) => {
+    state.userId = val
+}
+
 export const SET_USERNAME = (state, val) => {
     state.username = val
 }

@@ -67,6 +67,11 @@
                 }).then(response => {
                     let res = response.data
                     if (res.status === '1') {
+                        this.$store.commit('SET_USERID', res.result.user._id)
+                        this.$store.commit('SET_USERNAME', res.result.user.info.username)
+                        this.$store.commit('SET_AVATAR', res.result.user.info.avatar)
+                        this.$store.commit('SET_INFOID', res.result.user.info._id)
+                        this.$store.commit('SET_ROLE', res.result.user.role)
                         setCookie('sessionId', res.result.sessionId)
                         this.$router.push('/admin')
                     } else {

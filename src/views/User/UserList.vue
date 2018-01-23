@@ -267,21 +267,26 @@ export default {
         this.tempId = row.id
       },
       handleDelete () {
-        this.$ajax.delete('/users/delUser', {
-          params: {
-            id: this.tempId
-          }
-        }).then(res => {
-          if (res.data.status === '1') {
-            this.$message({
-              message: res.data.msg,
-              type: 'success'
-            })
-            // 重新获取新数据
-            this.loadingUser()
-            this.removeModalFlag = false
-          }
-        })
+        if (this.tempId === this.$store.state.userId) {
+          this.$message.error('用户删除失败')
+          this.removeModalFlag = false
+        } else {
+          this.$ajax.delete('/users/delUser', {
+            params: {
+              id: this.tempId
+            }
+          }).then(res => {
+            if (res.data.status === '1') {
+              this.$message({
+                message: res.data.msg,
+                type: 'success'
+              })
+              // 重新获取新数据
+              this.loadingUser()
+              this.removeModalFlag = false
+            }
+          })
+        }
       },
       // 最高权限修改密码
       showPwdModal (index, row) {

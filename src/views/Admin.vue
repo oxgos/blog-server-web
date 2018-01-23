@@ -61,7 +61,8 @@
                         </el-col>
                         <el-col :span="3" :offset="15">
                             <div class="profile">
-                                <img :src="avatarUrl" alt="" width="42" height="42">
+                                <img :src="avatarUrl" alt="logo" width="42" height="42" v-if="avatarUrl">
+                                <img src="./../assets/img/a1.jpg" alt="logo" width="42" height="42" v-else>
                             </div>
                             <el-dropdown @command="handleCommand">
                                 <span class="el-dropdown-link">
@@ -118,6 +119,7 @@ export default {
             } else if (command === '3') {
                 this.$ajax.get('/users/logout').then(res => {
                     if (res.data.status === '1') {
+                        this.$store.commit('SET_USERID', '')
                         this.$store.commit('SET_USERNAME', '')
                         this.$store.commit('SET_AVATAR', '')
                         this.$store.commit('SET_INFOID', '')

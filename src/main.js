@@ -24,7 +24,10 @@ router.beforeEach((to, from, next) => {
     }).then(response => {
       let res = response.data
       if (res.status === '1') {
+        console.log(res.result.info)
         store.commit('SET_USERNAME', res.result.info.username)
+        store.commit('SET_AVATAR', res.result.info.avatar)
+        store.commit('SET_INFOID', res.result.info._id)
         store.commit('SET_ROLE', res.result.role)
         next()
       } else {

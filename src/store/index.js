@@ -6,7 +6,9 @@ Vue.use(Vuex)
 
 const state = {
     username: '',
-    role: ''
+    role: '',
+    infoId: '',
+    avatarUrl: ''
 }
 
 export default new Vuex.Store({

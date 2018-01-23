@@ -61,7 +61,7 @@
                         </el-col>
                         <el-col :span="3" :offset="15">
                             <div class="profile">
-                                <img src="../assets/img/a1.jpg" alt="" width="42" height="42">
+                                <img :src="avatarUrl" alt="" width="42" height="42">
                             </div>
                             <el-dropdown @command="handleCommand">
                                 <span class="el-dropdown-link">
@@ -98,7 +98,8 @@ export default {
     },
     computed: {
         ...mapState([
-            'username'
+            'username',
+            'avatarUrl'
         ]),
         ...mapGetters([
             'formatRole'
@@ -118,6 +119,8 @@ export default {
                 this.$ajax.get('/users/logout').then(res => {
                     if (res.data.status === '1') {
                         this.$store.commit('SET_USERNAME', '')
+                        this.$store.commit('SET_AVATAR', '')
+                        this.$store.commit('SET_INFOID', '')
                         this.$store.commit('SET_ROLE', '')
                         delCookie('sessionId')
                         this.$router.push('/')

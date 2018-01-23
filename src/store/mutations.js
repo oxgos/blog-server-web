@@ -5,3 +5,11 @@ export const SET_USERNAME = (state, val) => {
 export const SET_ROLE = (state, val) => {
     state.role = val
 }
+
+export const SET_INFOID = (state, val) => {
+    state.infoId = val
+}
+
+export const SET_AVATAR = (state, val) => {
+    state.avatarUrl = val
+}

@@ -24,6 +24,20 @@
                 <mavon-editor v-model="content" ref="md"/>
             </el-col>
         </el-row>
+        <el-upload
+            class="upload-image"
+            action="/users/updateInfo"
+            :on-change="handleChange"
+            :before-remove="beforeRemove"
+            :on-exceed="handleExceed"
+            :headers="{flag: true}"
+            :limit="1"
+            :auto-upload="false"
+            :file-list="fileList"
+        >
+            <el-button size="small" type="primary">选择文件</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+        </el-upload>
         <el-row class="category">
             <el-col :span="12" :offset="2">
                 文章分类:
@@ -52,14 +66,19 @@
                articleType: '',
                content: '',
                categoryType: '',
-               categories: []
+               categories: [],
+               uploadFile: '',
+               fileList: []
            }
        },
-       mounted () {
+       created () {
            this.loadingArticleDetail()
        },
+       mounted () {
+           this.setImageTipsPosition()
+       },
        methods: {
-           loadingArticleDetail () {
+            loadingArticleDetail () {
                this.id = this.$route.query.id
                this.$ajax.get('/articles/detail', {
                     params: {
@@ -67,7 +86,12 @@
                     }
                 }).then(res => {
                     if (res.data.status === '1') {
-                        var response = res.data.result
+                        let response = res.data.result
+                        let obj = {
+                            name: response.article.poster.slice(7),
+                            url: response.article.poster
+                        }
+                        this.fileList.push(obj)
                         this.title = response.article.title
                         this.articleType = response.article.type
                         this.content = response.article.mdContent
@@ -75,18 +99,37 @@
                         this.categories = response.categories
                     }
                 })
+            },
+            setImageTipsPosition () {
+                let ul = document.getElementsByClassName('el-upload-list')[0]
+                ul.style.position = 'absolute'
+                ul.style.top = '-5px'
+                ul.style.left = '100px'
            },
-           save () {
+            handleChange (file) {
+                console.log(file)
+                this.fileList[0].url = file.url
+                this.fileList[0].name = file.name
+                this.uploadFile = file.raw
+            },
+            handleExceed (files, fileList) {
+                this.$message.warning(`已超出上传文件数量,最多上传 ${files.length} 个,请先删除再上传`)
+            },
+            beforeRemove (file, fileList) {
+                return this.$confirm(`确定移除 ${file.name}？`)
+            },
+            save () {
                 var html = ''
                 html = this.$refs.md.s_markdown.render(this.content)
-                this.$ajax.post('/articles/edit', {
-                    id: this.id,
-                    type: this.articleType,
-                    title: this.title,
-                    mdContent: this.content,
-                    htmlContent: html,
-                    category: this.categoryType
-                }).then(res => {
+                let formData = new FormData()
+                formData.append('avatar', this.uploadFile)
+                formData.append('id', this.id)
+                formData.append('type', this.articleType)
+                formData.append('title', this.title)
+                formData.append('mdContent', this.content)
+                formData.append('htmlContent', html)
+                formData.append('category', this.categoryType)
+                this.$ajax.post('/articles/edit', formData).then(res => {
                     if (res.data.status === '1') {
                         this.$message({
                             message: res.data.msg,
@@ -107,9 +150,11 @@
     .title, .editor
         margin-bottom 20px
     .category
-        margin-bottom 40px
+        margin 20px 0
     .source
         padding 0 10px 20px 10px
     .markdown-body
-        height 600px
+        height 580px
+    .upload-image
+        position relative
 </style>

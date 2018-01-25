@@ -79,6 +79,7 @@
             },
             beforeAvatarUpload (file) {
                 // const isJPG = file.type === 'image/jpeg'
+                console.log(file)
                 this.form.avatar = file
                 const isLt2M = file.size / 1024 / 1024 < 2
 

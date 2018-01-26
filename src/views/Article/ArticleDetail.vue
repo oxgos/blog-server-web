@@ -10,13 +10,23 @@
             </el-col>
         </el-row>
         <el-row class="title">
-            <el-col :span="14">
+            <el-col :span="8">
                 <el-input class="input-with-select" v-model="title" placeholder="请输入标题">
                     <el-select v-model="articleType" slot="prepend" placeholder="请选择" style="width: 130px;">
                         <el-option label="原创" value="原创"></el-option>
                         <el-option label="转载" value="转载"></el-option>
                     </el-select>
                 </el-input>
+            </el-col>
+            <el-col :span="16">
+                <el-form :model="introduceForm" status-icon :rules="rules" ref="introduceForm" label-width="100px" class="introduceForm">
+                    <el-form-item label="" prop="introduce">
+                        <el-input placeholder="请输入内容" v-model="introduceForm.introduce">
+                            <template slot="prepend">简介：</template>
+                            <template slot="append">{{countText}}字</template>
+                        </el-input>
+                    </el-form-item>
+                </el-form>
             </el-col>
         </el-row>
         <el-row class="editor">
@@ -60,20 +70,45 @@
 <script type="text/ecmascript-6">
    export default {
        data () {
-           return {
-               id: '',
-               title: '',
-               articleType: '',
-               content: '',
-               categoryType: '',
-               categories: [],
-               uploadFile: '',
-               fileList: []
-           }
+            var validateIntro = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入简介'))
+                } else if (value.length > 150) {
+                    callback(new Error('字数不能超过150'))
+                } else {
+                    callback()
+                }
+            }
+            return {
+                id: '',
+                title: '',
+                introduceForm: {
+                    introduce: ''
+                },
+                rules: {
+                    introduce: [
+                        {
+                            validator: validateIntro,
+                            trigger: 'blur'
+                        }
+                    ]
+                },
+                articleType: '',
+                content: '',
+                categoryType: '',
+                categories: [],
+                uploadFile: '',
+                fileList: []
+            }
        },
        created () {
            this.loadingArticleDetail()
        },
+       computed: {
+            countText () {
+                return this.introduceForm.introduce.length
+            }
+        },
        mounted () {
            this.setImageTipsPosition()
        },
@@ -93,6 +128,7 @@
                         }
                         this.fileList.push(obj)
                         this.title = response.article.title
+                        this.introduceForm.introduce = response.article.introduce
                         this.articleType = response.article.type
                         this.content = response.article.mdContent
                         this.categoryType = response.article.category._id
@@ -100,6 +136,7 @@
                     }
                 })
             },
+            // 改变上传图片提示的位置
             setImageTipsPosition () {
                 let ul = document.getElementsByClassName('el-upload-list')[0]
                 ul.style.position = 'absolute'
@@ -118,6 +155,7 @@
             beforeRemove (file, fileList) {
                 return this.$confirm(`确定移除 ${file.name}？`)
             },
+            // 保存编辑
             save () {
                 var html = ''
                 html = this.$refs.md.s_markdown.render(this.content)
@@ -126,6 +164,7 @@
                 formData.append('id', this.id)
                 formData.append('type', this.articleType)
                 formData.append('title', this.title)
+                formData.append('introduce', this.introduceForm.introduce)
                 formData.append('mdContent', this.content)
                 formData.append('htmlContent', html)
                 formData.append('category', this.categoryType)
@@ -139,6 +178,7 @@
                     }
                 })
            },
+           // 取消编辑
            cancel () {
                this.$router.push('/admin/articleList')
            }
@@ -147,8 +187,6 @@
 </script>
 
 <style lang="stylus" scoped>
-    .title, .editor
-        margin-bottom 20px
     .category
         margin 20px 0
     .source

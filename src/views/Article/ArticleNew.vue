@@ -63,8 +63,8 @@ export default {
         var validateIntro = (rule, value, callback) => {
             if (value === '') {
                 callback(new Error('请输入简介'))
-            } else if (value.length > 300) {
-                callback(new Error('字数不能超过300'))
+            } else if (value.length > 150) {
+                callback(new Error('字数不能超过150'))
             } else {
                 callback()
             }
@@ -124,7 +124,7 @@ export default {
             })
         },
         newArticle () {
-            if (this.articleType && this.title && this.content && this.categoryId && this.introduceForm.introduce && this.introduceForm.introduce.length <= 300) {
+            if (this.articleType && this.title && this.content && this.categoryId && this.introduceForm.introduce && this.introduceForm.introduce.length <= 150) {
                 let html = ''
                 html = this.$refs.md.s_markdown.render(this.content)
                 let formData = new FormData()
@@ -153,9 +153,6 @@ export default {
                 })
             }
         }
-    },
-    components: {
-
     }
 }
 </script>

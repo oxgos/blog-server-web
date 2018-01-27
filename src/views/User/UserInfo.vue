@@ -105,7 +105,7 @@
                         this.$message.success(res.data.msg)
                         console.log(res.data.result)
                         this.$store.commit('SET_USERNAME', res.data.result.username)
-                        this.$router.push('/admin/articleList')
+                        this.$router.push('/admin/userList')
                     }
                 })
             }

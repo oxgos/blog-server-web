@@ -12,6 +12,9 @@
             </el-col>
         </el-row>
         <el-table
+            v-loading="loadingFlag"
+            element-loading-text="拼命加载中"
+            element-loading-spinner="el-icon-loading"
             :data="tableData"
             stripe
             style="width: 100%">
@@ -115,6 +118,7 @@
                 }
             }
             return {
+                    loadingFlag: false,
                     // 表格所有数据
                     tableData: [],
                     // 修改分类的名称
@@ -147,7 +151,9 @@
         },
         methods: {
             loadingCategory () {
+                this.loadingFlag = true
                 this.$ajax.get('/categories').then(response => {
+                    this.loadingFlag = false
                     var arr = []
                     var res = response.data
                     if (res.status === '1') {

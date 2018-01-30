@@ -9,6 +9,9 @@
             </el-col>
         </el-row>
         <el-table
+            v-loading="loadingFlag"
+            element-loading-text="拼命加载中"
+            element-loading-spinner="el-icon-loading"
             ref="multipleTable"
             :data="tableData"
             tooltip-effect="dark"
@@ -55,7 +58,8 @@ export default {
     data () {
         return {
             tableData: [],
-            multipleSelection: []
+            multipleSelection: [],
+            loadingFlag: false
         }
     },
     created () {
@@ -64,7 +68,9 @@ export default {
     methods: {
         loadArticle () {
             var data = []
+            this.loadingFlag = true
             this.$ajax.get('/articles').then(response => {
+                this.loadingFlag = false
                 let res = response.data
                 if (res.status === '1') {
                     res.result.forEach(item => {
@@ -91,6 +97,7 @@ export default {
                 }
             })
         },
+        // 删除文章
         delArticle (index, row) {
             var flag = false
             this.multipleSelection.forEach(item => {
@@ -105,8 +112,10 @@ export default {
                     }
                 }).then(res => {
                     if (res.data.status === '1') {
-                        this.$message.error(res.data.msg)
+                        this.$message.success(res.data.msg)
                         this.loadArticle()
+                    } else {
+                        this.$message.error(res.data.msg)
                     }
                 })
             } else {

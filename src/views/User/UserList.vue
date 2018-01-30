@@ -12,6 +12,9 @@
       </el-col>
     </el-row>
     <el-table
+      v-loading="loadingFlag"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
       :data="tableData"
       stripe
       style="width: 100%">
@@ -34,7 +37,7 @@
         label="操作"
       >
         <template slot-scope="scope">
-          <el-button type="primary" size="mini"  @click="showPwdModal(scope.$index, scope.row)" v-if="userRole >= 40">修改密码</el-button>
+          <el-button type="primary" size="mini"  @click="showPwdModal(scope.$index, scope.row)">修改密码</el-button>
           <el-button type="warning" size="mini"  @click="showRoleModal(scope.$index, scope.row)">权限设置</el-button>
           <el-button type="danger" size="mini" @click="showRemoveModal(scope.$index, scope.row)">删除</el-button>
         </template>
@@ -145,6 +148,7 @@ export default {
           }
         }
         return {
+          loadingFlag: false,
           // 双向绑定修改添加用户输入框
           addUserForm: {
             account: '',
@@ -202,9 +206,11 @@ export default {
     },
     methods: {
       loadingUser () {
+        this.loadingFlag = true
         var _data = []
         let userRole = ''
         this.$ajax.get('/users').then(response => {
+          this.loadingFlag = false
           let res = response.data
           if (res.status === '1') {
             this.users = res.result
@@ -252,6 +258,8 @@ export default {
               this.loadingUser()
               this.addModalFlag = false
               this.resetForm('addUserForm')
+            } else {
+              this.$message.error(res.data.msg)
             }
           })
         } else {
@@ -284,6 +292,8 @@ export default {
               // 重新获取新数据
               this.loadingUser()
               this.removeModalFlag = false
+            } else {
+              this.$message.error(res.data.msg)
             }
           })
         }
@@ -293,6 +303,7 @@ export default {
         this.pwdModalFlag = true
         this.tempId = row.id
       },
+      // 最高权限修改密码
       handleModify () {
         if (this.modifyPwdForm.pass !== '' && this.modifyPwdForm.checkPass !== '' && this.modifyPwdForm.pass === this.modifyPwdForm.checkPass) {
           this.$ajax.post('/users/adminPwd', {
@@ -306,6 +317,8 @@ export default {
               })
               this.pwdModalFlag = false
               this.resetForm('modifyPwdForm')
+            } else {
+              this.$message.error(res.data.msg)
             }
           })
         } else {

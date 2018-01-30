@@ -79,7 +79,6 @@
             },
             beforeAvatarUpload (file) {
                 // const isJPG = file.type === 'image/jpeg'
-                console.log(file)
                 this.form.avatar = file
                 const isLt2M = file.size / 1024 / 1024 < 2
 
@@ -103,7 +102,6 @@
                 this.$ajax.post('/users/updateInfo', formData).then(res => {
                     if (res.data.status === '1') {
                         this.$message.success(res.data.msg)
-                        console.log(res.data.result)
                         this.$store.commit('SET_USERNAME', res.data.result.username)
                         this.$router.push('/admin/userList')
                     }

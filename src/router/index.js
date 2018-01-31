@@ -10,6 +10,7 @@ import ArticleNew from '@/views/Article/ArticleNew'
 import ArticleList from '@/views/Article/ArticleList'
 import ArticleDetail from '@/views/Article/ArticleDetail'
 import ArticleCategory from '@/views/Article/ArticleCategory'
+import Comment from '@/views/Comments/Comment'
 
 Vue.use(Router)
 
@@ -65,6 +66,11 @@ export default new Router({
           path: 'articleCategory',
           name: 'articleCategory',
           component: ArticleCategory
+        },
+        {
+          path: 'comment',
+          name: 'comment',
+          component: Comment
         }
       ]
     }

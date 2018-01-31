@@ -22,6 +22,9 @@ module.exports = {
       },
       '/upload': {
         target: 'http://localhost:3000'
+      },
+      '/feArticles': {
+        target: 'http://localhost:3000'
       }
     },
 

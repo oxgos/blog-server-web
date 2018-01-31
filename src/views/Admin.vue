@@ -39,10 +39,16 @@
                                     <el-menu-item index="2-3" route="/admin/articleCategory">文章分类</el-menu-item>
                                 </el-menu-item-group>
                             </el-submenu>
-                            <el-menu-item index="3">
-                                <i class="el-icon-star-on"></i>
-                                <span slot="title">评论管理</span>
-                            </el-menu-item>
+                            <el-submenu index="3">
+                                <template slot="title">
+                                    <i class="el-icon-star-on"></i>
+                                    <span slot="title">评论管理</span>
+                                </template>
+                                <el-menu-item-group>
+                                    <template slot="title">分组</template>
+                                    <el-menu-item index="3-1"  route="/admin/comment">评论列表</el-menu-item>
+                                </el-menu-item-group>
+                            </el-submenu>
                         </el-menu>
                     </el-col>
                 </el-row>

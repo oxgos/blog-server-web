@@ -60,7 +60,7 @@
             loadingUserInfo () {
                 this.$ajax.get('/users/getUserInfo', {
                     params: {
-                        infoId: this.$store.state.infoId
+                        infoId: this.$route.params.id
                     }
                 }).then(res => {
                     if (res.data.status === '1') {

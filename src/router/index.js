@@ -38,7 +38,7 @@ export default new Router({
           component: UserList
         },
         {
-          path: 'userInfo',
+          path: 'userInfo/:id',
           name: 'userInfo',
           component: UserInfo
         },

@@ -106,7 +106,8 @@ export default {
     computed: {
         ...mapState([
             'username',
-            'avatarUrl'
+            'avatarUrl',
+            'infoId'
         ]),
         ...mapGetters([
             'formatRole'
@@ -121,7 +122,7 @@ export default {
       },
       handleCommand (command) {
             if (command === '1') {
-                this.$router.push('/admin/userInfo')
+                this.$router.push(`/admin/userInfo/${this.infoId}`)
             } else if (command === '3') {
                 this.$ajax.get('/users/logout').then(res => {
                     if (res.data.status === '1') {

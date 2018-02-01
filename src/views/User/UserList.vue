@@ -35,9 +35,11 @@
       </el-table-column>
       <el-table-column
         label="操作"
+        width="400"
       >
         <template slot-scope="scope">
-          <el-button type="primary" size="mini"  @click="showPwdModal(scope.$index, scope.row)">修改密码</el-button>
+          <el-button type="primary" size="mini"  @click="toInfo(scope.$index, scope.row)">用户资料</el-button>
+          <el-button type="info" size="mini"  @click="showPwdModal(scope.$index, scope.row)">重设密码</el-button>
           <el-button type="warning" size="mini"  @click="showRoleModal(scope.$index, scope.row)">权限设置</el-button>
           <el-button type="danger" size="mini" @click="showRemoveModal(scope.$index, scope.row)">删除</el-button>
         </template>
@@ -108,6 +110,7 @@
 
 <script type="text/ecmascript-6">
 import modal from '@/components/Modal'
+import { mapState } from 'vuex'
 
 export default {
     data () {
@@ -197,6 +200,9 @@ export default {
         }
     },
     computed: {
+      ...mapState([
+            'role'
+        ]),
       userRole () {
         return this.$store.state.role
       }
@@ -235,6 +241,7 @@ export default {
               }
               obj.id = this.users[i]._id
               obj.account = this.users[i].account
+              obj.infoId = this.users[i].info._id
               obj.username = this.users[i].info.username
               obj.role = userRole
               _data[i] = obj
@@ -243,6 +250,15 @@ export default {
           }
         })
       },
+      // 跳转到用户信息
+      toInfo (index, row) {
+        if (this.role < 50) {
+          this.$message.error('权限不够，不能查看信息')
+        } else {
+          this.$router.push(`/admin/userInfo/${row.infoId}`)
+        }
+      },
+      // 添加用户
       addNewUser () {
         if (this.addUserForm.pass === this.addUserForm.checkPass) {
           this.$ajax.post('/users/newAccount', {
@@ -330,8 +346,12 @@ export default {
       },
       // 修改权限
       showRoleModal (index, row) {
-        this.editModalFlag = true
-        this.tempId = row.id
+        if (this.role < 50) {
+          this.$message.error('权限不够，不能设置')
+        } else {
+          this.editModalFlag = true
+          this.tempId = row.id
+        }
       },
       modifyRole () {
         this.$ajax.post('/users/modifyRole', {

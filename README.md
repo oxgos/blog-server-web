@@ -11,15 +11,15 @@
 ### 项目简介
 
 > 项目已前后端分离开发。分别用到的框架如下:
-* 前台页面用nuxt + axios开发
-线上浏览地址: blog.gjwchaichai.pw
+* 前台页面用nuxt + axios开发  
+线上浏览地址: blog.gjwchaichai.pw  
 GITHUB源码地址:  [blog-website-nuxt](https://github.com/oxgos/blog-website-nuxt)
 
-* 后台页面用vue2 + axios + vue-router + element-ui开发
-线上浏览地址: blog-admin.gjwchaichai.pw
+* 后台页面用vue2 + axios + vue-router + element-ui开发  
+线上浏览地址: blog-admin.gjwchaichai.pw  
 GITHUB源码地址:  [blog-admin](https://github.com/oxgos/blog-server-web)
 
-* 后台服务器nodejs + express + mongodb开发
+* 后台服务器nodejs + express + mongodb开发  
 GITHUB源码地址:  [blog-server](https://github.com/oxgos/blog-server)
 
 ****

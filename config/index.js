@@ -11,19 +11,19 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/users': {
-        target: 'http://localhost:3000'
+        target: 'http://localhost:3004'
       },
       '/articles': {
-        target: 'http://localhost:3000'
+        target: 'http://localhost:3004'
       },
       '/categories': {
-        target: 'http://localhost:3000'
+        target: 'http://localhost:3004'
       },
       '/upload': {
-        target: 'http://localhost:3000'
+        target: 'http://localhost:3004'
       },
       '/feArticles': {
-        target: 'http://localhost:3000'
+        target: 'http://localhost:3004'
       }
     },
 
@@ -70,7 +70,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/dist',
+    assetsPublicPath: '',
 
     /**
      * Source Maps

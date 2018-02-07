@@ -7,7 +7,7 @@
             <el-breadcrumb-item>用户列表</el-breadcrumb-item>
           </el-breadcrumb>
       </el-col>
-      <el-col :span="1" :offset="11">
+      <el-col :span="1" :offset="10">
           <el-button @click="addModalFlag = true" type="success" size="mini">添加</el-button>
       </el-col>
     </el-row>
@@ -351,6 +351,7 @@ export default {
         } else {
           this.editModalFlag = true
           this.tempId = row.id
+          this.roleForm.role = row.role
         }
       },
       modifyRole () {

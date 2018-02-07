@@ -49,8 +49,8 @@
     export default {
         data () {
             return {
-                account: '',
-                password: '',
+                account: 'test',
+                password: '123456',
                 errMsg: '',
                 isTips: false
             }

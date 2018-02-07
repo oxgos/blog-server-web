@@ -65,7 +65,7 @@
                                 <router-link to="/admin">回到首页</router-link>
                             </div>
                         </el-col>
-                        <el-col :span="3" :offset="15">
+                        <el-col :sm="{span: 5, offset: 13}" :lg="{span: 4, offset: 15}">
                             <div class="profile">
                                 <img :src="avatarUrl" alt="logo" width="42" height="42" v-if="avatarUrl">
                                 <img src="./../assets/img/a1.jpg" alt="logo" width="42" height="42" v-else>

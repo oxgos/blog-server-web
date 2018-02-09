@@ -71,6 +71,10 @@ export default new Router({
           path: 'comment',
           name: 'comment',
           component: Comment
+        },
+        {
+          path: '*',
+          redirect: '/admin'
         }
       ]
     }

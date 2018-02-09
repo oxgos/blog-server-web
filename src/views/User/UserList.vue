@@ -310,6 +310,7 @@ export default {
               this.removeModalFlag = false
             } else {
               this.$message.error(res.data.msg)
+              this.removeModalFlag = false
             }
           })
         }

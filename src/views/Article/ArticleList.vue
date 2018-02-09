@@ -54,6 +54,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+import { mapState } from 'vuex'
 export default {
     data () {
         return {
@@ -64,6 +65,11 @@ export default {
     },
     created () {
         this.loadArticle()
+    },
+    computed: {
+      ...mapState([
+          'role'
+      ])
     },
     methods: {
         loadArticle () {
@@ -90,12 +96,16 @@ export default {
             this.multipleSelection = val
         },
         showArticleDetail (index, row) {
-            this.$router.push({
-                path: '/admin/articleDetail',
-                query: {
-                    id: row.id
-                }
-            })
+            if (this.role < 50) {
+                this.$message.error('权限不够,不能查看')
+            } else {
+                this.$router.push({
+                    path: '/admin/articleDetail',
+                    query: {
+                        id: row.id
+                    }
+                })
+            }
         },
         // 删除文章
         delArticle (index, row) {

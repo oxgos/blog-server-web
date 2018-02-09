@@ -11,19 +11,19 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/users': {
-        target: 'http://localhost:3004'
+        target: 'http://localhost:3000'
       },
       '/articles': {
-        target: 'http://localhost:3004'
+        target: 'http://localhost:3000'
       },
       '/categories': {
-        target: 'http://localhost:3004'
+        target: 'http://localhost:3000'
       },
       '/upload': {
-        target: 'http://localhost:3004'
+        target: 'http://localhost:3000'
       },
       '/feArticles': {
-        target: 'http://localhost:3004'
+        target: 'http://localhost:3000'
       }
     },
 

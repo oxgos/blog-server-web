@@ -8,7 +8,7 @@
                 </el-breadcrumb>
             </el-col>
             <el-col :span="1" :offset="11">
-                <el-button @click="addModal = true" type="success" size="mini">添加</el-button>
+                <el-button @click="addModalShow" type="success" size="mini">添加</el-button>
             </el-col>
         </el-row>
         <el-table
@@ -100,7 +100,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import Modal from '@/components/Modal'
+import Modal from '@/components/Modal'
+import { mapState } from 'vuex'
     export default {
         data () {
             var validateName = (rule, value, callback) => {
@@ -141,13 +142,16 @@
                         ]
                     },
                     // 临时存放的id
-                    tempId: '',
-                    // 临时存放是否前台显示
-                    tempVisible: ''
+                    tempId: ''
             }
         },
         mounted () {
             this.loadingCategory()
+        },
+        computed: {
+          ...mapState([
+              'role'
+          ])
         },
         methods: {
             loadingCategory () {
@@ -172,8 +176,12 @@
             },
             // 显示修改模态框
             showModifyModal (index, row) {
-                this.modifyModal = true
-                this.tempId = row.id
+                if (this.role < 50) {
+                    this.$message.error('权限不够,不能修改')
+                } else {
+                    this.modifyModal = true
+                    this.tempId = row.id
+                }
             },
             // 修改分类
             modifyCategory () {
@@ -191,6 +199,14 @@
                     })
                 } else {
                     this.$message.error('分类名不能为空')
+                }
+            },
+            // 添加分类
+            addModalShow () {
+                if (this.role < 50) {
+                    this.$message.error('权限不够,不能添加')
+                } else {
+                    this.addModal = true
                 }
             },
             // 前端是否显示
@@ -218,8 +234,10 @@
                     }
                 }).then(res => {
                     if (res.data.status === '1') {
-                        this.$message.error(res.data.msg)
+                        this.$message.success(res.data.msg)
                         this.loadingCategory()
+                    } else {
+                        this.$message.error(res.data.msg)
                     }
                 })
             },
